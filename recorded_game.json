@@ -1,0 +1,16 @@
+{
+    "board_type": "English",
+    "size": 7,
+    "moves": [
+        {
+            "start": [
+                3,
+                5
+            ],
+            "end": [
+                3,
+                3
+            ]
+        }
+    ]
+}

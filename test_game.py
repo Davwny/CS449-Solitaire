@@ -107,6 +107,65 @@ class TestSolitaireGame(unittest.TestCase):
                         0
                     )
 
+  
+    def test_get_valid_moves(self):
+        game = SolitaireGame(7, "English")
+
+        moves = game.get_valid_moves()
+
+        self.assertGreater(len(moves), 0)
+        self.assertIn(((3, 1), (3, 3)), moves)
+
+    def test_auto_move(self):
+        game = SolitaireGame(7, "English")
+
+        before = sum(row.count(1) for row in game.board)
+
+        result = game.auto_move()
+
+        after = sum(row.count(1) for row in game.board)
+
+        self.assertTrue(result)
+        self.assertEqual(after, before - 1)
+
+    def test_randomize_board(self):
+        game = SolitaireGame(7, "English")
+
+        before = sum(row.count(1) for row in game.board)
+
+        moves = game.randomize_board(3)
+
+        after = sum(row.count(1) for row in game.board)
+
+        self.assertEqual(moves, 3)
+        self.assertEqual(after, before - 3)
+
+    def test_record_and_replay(self):
+        import tempfile
+        import os
+
+        game = SolitaireGame(7, "English")
+        game.recording = True
+
+        self.assertTrue(
+            game.make_move((3, 1), (3, 3))
+        )
+
+        with tempfile.TemporaryDirectory() as folder:
+            filename = os.path.join(folder, "test_recording.json")
+
+            game.save_game(filename)
+
+            replay = SolitaireGame()
+            replay.load_game(filename)
+            replay.replay_game()
+
+            self.assertEqual(replay.board, game.board)
+            self.assertEqual(
+                len(replay.move_history), 1
+            )
+                  
+
 
     
 if __name__ == "__main__":
